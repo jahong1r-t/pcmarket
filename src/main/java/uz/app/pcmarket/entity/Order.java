@@ -6,7 +6,7 @@ import uz.app.pcmarket.entity.abs.AuditEntity;
 import uz.app.pcmarket.entity.enums.OrderStatus;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
+@Entity(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

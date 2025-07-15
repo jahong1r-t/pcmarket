@@ -19,8 +19,8 @@ public class Cart extends AuditEntity {
     private Long id;
 
     @ManyToOne
-    private User user; // Пользователь, которому принадлежит корзина
+    private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems = new ArrayList<>(); // Список элементов корзины
+    private List<CartItem> cartItems = new ArrayList<>();
 }
