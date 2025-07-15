@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitors - PC Market</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding-top: 56px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .category-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .category-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .category-item.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .product-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-img {
+            height: 200px;
+            object-fit: contain;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .offcanvas-footer {
+            background-color: #f8f9fa;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-control button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            margin: 0 5px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+
+        footer a {
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Category Page Specific Styles */
+        .accordion-button:not(.collapsed) {
+            background-color: #f8f9fa;
+            color: #0d6efd;
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0, 0, 0, .125);
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-check {
+            margin-bottom: 8px;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb-item.active {
+            color: #6c757d;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .pagination .page-link {
+            color: #0d6efd;
+        }
+
+        /* Additional UI Enhancements */
+        .card-header.bg-primary {
+            background: linear-gradient(90deg, #0d6efd, #6610f2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #0d6efd, #6610f2);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #0b5ed7, #5a0fd6);
+        }
+
+        .product-card .card-body {
+            padding: 15px;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            min-height: 48px;
+        }
+
+        .product-specs {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- Fixed Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">PC Market</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="category.html">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+            <div class="d-flex">
+                <button class="btn btn-outline-light position-relative" data-bs-toggle="offcanvas"
+                        data-bs-target="#shoppingCart">
+                    <i class="bi bi-cart"></i> Basket
+                    <span id="cartCounter"
+                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Shopping Cart Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="shoppingCart">
+    <div class="offcanvas-header bg-light">
+        <h5 class="offcanvas-title">Your Shopping Cart</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="cartItems" class="mb-3">
+            <p class="text-muted">Your cart is empty</p>
+        </div>
+    </div>
+    <div class="offcanvas-footer p-3 border-top">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Total:</h5>
+            <h5 id="cartTotal">$0.00</h5>
+        </div>
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary">View Cart</button>
+            <button class="btn btn-success">Checkout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="container mt-5 pt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="category.html">Categories</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Monitors</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-md-3">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="accordion" id="filterAccordion">
+                        <!-- Price Filter -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#priceFilter">
+                                    Price Range
+                                </button>
+                            </h2>
+                            <div id="priceFilter" class="accordion-collapse collapse show"
+                                 data-bs-parent="#filterAccordion">
+                                <div class="accordion-body">
+                                    <input type="range" class="form-range" min="0" max="2000" step="50" id="priceRange"
+                                           value="2000">
+                                    <div class="d-flex justify-content-between">
+                                        <span>$0</span>
+                                        <span id="maxPriceValue">$2000</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-primary w-100" id="applyPriceFilter">
+                                            Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Brand Filter -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#brandFilter">
+                                    Brand
+                                </button>
+                            </h2>
+                            <div id="brandFilter" class="accordion-collapse collapse" data-bs-parent="#filterAccordion">
+                                <div class="accordion-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="acer" id="brandAcer">
+                                        <label class="form-check-label" for="brandAcer">Acer</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="asus" id="brandAsus">
+                                        <label class="form-check-label" for="brandAsus">ASUS</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="dell" id="brandDell">
+                                        <label class="form-check-label" for="brandDell">Dell</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="hp" id="brandHp">
+                                        <label class="form-check-label" for="brandHp">HP</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="lg" id="brandLg">
+                                        <label class="form-check-label" for="brandLg">LG</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="samsung"
+                                               id="brandSamsung">
+                                        <label class="form-check-label" for="brandSamsung">Samsung</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Screen Size Filter -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#sizeFilter">
+                                    Screen Size
+                                </button>
+                            </h2>
+                            <div id="sizeFilter" class="accordion-collapse collapse" data-bs-parent="#filterAccordion">
+                                <div class="accordion-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="24" id="size24">
+                                        <label class="form-check-label" for="size24">24 inch</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="27" id="size27">
+                                        <label class="form-check-label" for="size27">27 inch</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="32" id="size32">
+                                        <label class="form-check-label" for="size32">32 inch</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="34" id="size34">
+                                        <label class="form-check-label" for="size34">34 inch (Ultrawide)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resolution Filter -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#resolutionFilter">
+                                    Resolution
+                                </button>
+                            </h2>
+                            <div id="resolutionFilter" class="accordion-collapse collapse"
+                                 data-bs-parent="#filterAccordion">
+                                <div class="accordion-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="1080p" id="res1080">
+                                        <label class="form-check-label" for="res1080">Full HD (1920x1080)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="1440p" id="res1440">
+                                        <label class="form-check-label" for="res1440">QHD (2560x1440)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="4k" id="res4k">
+                                        <label class="form-check-label" for="res4k">4K UHD (3840x2160)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="ultrawide" id="resUltra">
+                                        <label class="form-check-label" for="resUltra">Ultrawide (3440x1440)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Refresh Rate Filter -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#refreshFilter">
+                                    Refresh Rate
+                                </button>
+                            </h2>
+                            <div id="refreshFilter" class="accordion-collapse collapse"
+                                 data-bs-parent="#filterAccordion">
+                                <div class="accordion-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="60" id="rate60">
+                                        <label class="form-check-label" for="rate60">60Hz</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="144" id="rate144">
+                                        <label class="form-check-label" for="rate144">144Hz</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="240" id="rate240">
+                                        <label class="form-check-label" for="rate240">240Hz</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="360" id="rate360">
+                                        <label class="form-check-label" for="rate360">360Hz</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel Type Filter -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelFilter">
+                                    Panel Type
+                                </button>
+                            </h2>
+                            <div id="panelFilter" class="accordion-collapse collapse" data-bs-parent="#filterAccordion">
+                                <div class="accordion-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="ips" id="panelIPS">
+                                        <label class="form-check-label" for="panelIPS">IPS</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="va" id="panelVA">
+                                        <label class="form-check-label" for="panelVA">VA</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="tn" id="panelTN">
+                                        <label class="form-check-label" for="panelTN">TN</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="oled" id="panelOLED">
+                                        <label class="form-check-label" for="panelOLED">OLED</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-danger w-100 mb-4" id="resetFilters">
+                <i class="bi bi-x-circle"></i> Reset All Filters
+            </button>
+        </div>
+
+        <!-- Product Listing -->
+        <div class="col-md-9">
+            <div class="row mb-4 align-items-center">
+                <div class="col">
+                    <h2>Monitors</h2>
+                    <p class="text-muted">Showing <span id="filteredCount">9</span> of <span id="totalCount">9</span>
+                        products</p>
+                </div>
+                <div class="col-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
+                                data-bs-toggle="dropdown">
+                            Sort by: Featured
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Featured</a></li>
+                            <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                            <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                            <li><a class="dropdown-item" href="#">Newest</a></li>
+                            <li><a class="dropdown-item" href="#">Best Rated</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="productGrid">
+                <!-- Mock Product 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=Acer+Monitor"
+                             class="product-img card-img-top" alt="Acer Nitro XV272U">
+                        <div class="card-body">
+                            <h5 class="product-title">Acer Nitro XV272U</h5>
+                            <p class="product-specs">27 inch, QHD (2560x1440), 144Hz, IPS</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="price">$299.99</span>
+                                    <span class="original-price">$349.99</span>
+                                </div>
+                                <span class="discount-badge">14% OFF</span>
+                            </div>
+                            <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=Samsung+Monitor"
+                             class="product-img card-img-top" alt="Samsung Odyssey G7">
+                        <div class="card-body">
+                            <h5 class="product-title">Samsung Odyssey G7</h5>
+                            <p class="product-specs">32 inch, 4K UHD (3840x2160), 144Hz, VA</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$599.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=LG+Monitor" class="product-img card-img-top"
+                             alt="LG UltraGear 27GP850">
+                        <div class="card-body">
+                            <h5 class="product-title">LG UltraGear 27GP850</h5>
+                            <p class="product-specs">27 inch, QHD (2560x1440), 165Hz, IPS</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$399.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 4 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=ASUS+Monitor"
+                             class="product-img card-img-top" alt="ASUS ROG Swift PG279QZ">
+                        <div class="card-body">
+                            <h5 class="product-title">ASUS ROG Swift PG279QZ</h5>
+                            <p class="product-specs">27 inch, QHD (2560x1440), 144Hz, IPS</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$499.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 5 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=Dell+Monitor"
+                             class="product-img card-img-top" alt="Dell Alienware AW3423DW">
+                        <div class="card-body">
+                            <h5 class="product-title">Dell Alienware AW3423DW</h5>
+                            <p class="product-specs">34 inch, Ultrawide (3440x1440), 175Hz, OLED</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="price">$999.99</span>
+                                    <span class="original-price">$1199.99</span>
+                                </div>
+                                <span class="discount-badge">17% OFF</span>
+                            </div>
+                            <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 6 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=HP+Monitor" class="product-img card-img-top"
+                             alt="HP Omen 27u">
+                        <div class="card-body">
+                            <h5 class="product-title">HP Omen 27u</h5>
+                            <p class="product-specs">27 inch, 4K UHD (3840x2160), 144Hz, IPS</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$649.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 7 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=Acer+Monitor"
+                             class="product-img card-img-top" alt="Acer Predator XB253Q">
+                        <div class="card-body">
+                            <h5 class="product-title">Acer Predator XB253Q</h5>
+                            <p class="product-specs">24 inch, Full HD (1920x1080), 240Hz, IPS</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$349.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 8 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=Samsung+Monitor"
+                             class="product-img card-img-top" alt="Samsung Odyssey Neo G8">
+                        <div class="card-body">
+                            <h5 class="product-title">Samsung Odyssey Neo G8</h5>
+                            <p class="product-specs">32 inch, 4K UHD (3840x2160), 240Hz, VA</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$1299.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Product 9 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <img src="https://via.placeholder.com/300x200?text=LG+Monitor" class="product-img card-img-top"
+                             alt="LG UltraWide 34WP65C">
+                        <div class="card-body">
+                            <h5 class="product-title">LG UltraWide 34WP65C</h5>
+                            <p class="product-specs">34 inch, Ultrawide (3440x1440), 160Hz, VA</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price">$499.99</span>
+                                <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5 class="fw-bold">PC Market</h5>
+                <p>Your one-stop shop for all computer hardware and accessories.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 class="fw-bold">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="index.html" class="text-white">Home</a></li>
+                    <li><a href="category.html" class="text-white">Products</a></li>
+                    <li><a href="#" class="text-white">About Us</a></li>
+                    <li><a href="#" class="text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5 class="fw-bold">Contact Us</h5>
+                <address>
+                    <i class="bi bi-geo-alt"></i> 123 Tech Street, Silicon Valley<br>
+                    <i class="bi bi-phone"></i> (123) 456-7890<br>
+                    <i class="bi bi-envelope"></i> info@pcmarket.com
+                </address>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            <p>© 2025 PC Market. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

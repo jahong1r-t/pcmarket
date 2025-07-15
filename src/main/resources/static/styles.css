@@ -1,0 +1,141 @@
+/*body {*/
+/*    padding-top: 56px;*/
+/*    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+/*}*/
+
+/*.category-item {*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.2s;*/
+/*}*/
+
+/*.category-item:hover {*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*.category-item.active {*/
+/*    background-color: #0d6efd;*/
+/*    color: white;*/
+/*}*/
+
+/*.product-card {*/
+/*    transition: transform 0.3s, box-shadow 0.3s;*/
+/*    margin-bottom: 20px;*/
+/*    height: 100%;*/
+/*}*/
+
+/*.product-card:hover {*/
+/*    transform: translateY(-5px);*/
+/*    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.product-img {*/
+/*    height: 200px;*/
+/*    object-fit: contain;*/
+/*    padding: 10px;*/
+/*}*/
+
+/*.offcanvas-footer {*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*.cart-item {*/
+/*    border-bottom: 1px solid #eee;*/
+/*    padding-bottom: 10px;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.quantity-control {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*}*/
+
+/*.quantity-control button {*/
+/*    width: 30px;*/
+/*    height: 30px;*/
+/*    border: 1px solid #ddd;*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*.quantity-control input {*/
+/*    width: 50px;*/
+/*    text-align: center;*/
+/*    border: 1px solid #ddd;*/
+/*    margin: 0 5px;*/
+/*}*/
+
+/*.price {*/
+/*    font-weight: bold;*/
+/*    color: #0d6efd;*/
+/*}*/
+
+/*.original-price {*/
+/*    text-decoration: line-through;*/
+/*    color: #6c757d;*/
+/*    font-size: 0.9em;*/
+/*}*/
+
+/*.discount-badge {*/
+/*    position: absolute;*/
+/*    top: 10px;*/
+/*    right: 10px;*/
+/*    background-color: #dc3545;*/
+/*    color: white;*/
+/*    padding: 3px 8px;*/
+/*    border-radius: 5px;*/
+/*    font-size: 0.8em;*/
+/*}*/
+
+/*footer a {*/
+/*    text-decoration: none;*/
+/*}*/
+
+/*footer a:hover {*/
+/*    text-decoration: underline;*/
+/*}*/
+
+/*!* Add these to your existing styles.css *!*/
+
+/*!* Category Page Specific Styles *!*/
+/*.accordion-button:not(.collapsed) {*/
+/*    background-color: #f8f9fa;*/
+/*    color: #0d6efd;*/
+/*}*/
+
+/*.accordion-button:focus {*/
+/*    box-shadow: none;*/
+/*    border-color: rgba(0,0,0,.125);*/
+/*}*/
+
+/*.filter-label {*/
+/*    display: block;*/
+/*    margin-bottom: 5px;*/
+/*    font-weight: 500;*/
+/*}*/
+
+/*.form-check {*/
+/*    margin-bottom: 8px;*/
+/*}*/
+
+/*.form-check-input:checked {*/
+/*    background-color: #0d6efd;*/
+/*    border-color: #0d6efd;*/
+/*}*/
+
+/*.breadcrumb {*/
+/*    background-color: transparent;*/
+/*    padding: 0;*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+/*.breadcrumb-item.active {*/
+/*    color: #6c757d;*/
+/*}*/
+
+/*.pagination .page-item.active .page-link {*/
+/*    background-color: #0d6efd;*/
+/*    border-color: #0d6efd;*/
+/*}*/
+
+/*.pagination .page-link {*/
+/*    color: #0d6efd;*/
+/*}*/
