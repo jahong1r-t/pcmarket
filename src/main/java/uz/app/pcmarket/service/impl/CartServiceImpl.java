@@ -12,10 +12,9 @@ import uz.app.pcmarket.repository.CartRepository;
 import uz.app.pcmarket.repository.ProductRepository;
 import uz.app.pcmarket.repository.UserRepository;
 import uz.app.pcmarket.service.CartService;
-
 import java.util.ArrayList;
 
-@Service
+@Service("cartService")
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
@@ -35,7 +34,8 @@ public class CartServiceImpl implements CartService {
                 .orElse(Cart.builder().user(user).cartItems(new ArrayList<>()).build());
 
         // Проверяем, есть ли продукт уже в корзине
-        CartItem existingItem = cart.getCartItems().stream()
+        CartItem existingItem = cart.getCartItems()
+                .stream()
                 .filter(item -> item.getProduct().getId().equals(addToCartDTO.getProductId()))
                 .findFirst()
                 .orElse(null);
@@ -54,7 +54,6 @@ public class CartServiceImpl implements CartService {
             cart.getCartItems().add(cartItem);
             cartItemRepository.save(cartItem);
         }
-
         return cartRepository.save(cart);
     }
 
@@ -82,7 +81,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void clearCart(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId)
+        Cart cart = cartRepository
+                .findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
         cart.getCartItems().clear();
         cartRepository.save(cart);

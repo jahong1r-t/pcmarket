@@ -5,7 +5,6 @@ import uz.app.pcmarket.entity.Category;
 import uz.app.pcmarket.payload.req.CategoryReqDTO;
 import uz.app.pcmarket.repository.CategoryRepository;
 import uz.app.pcmarket.service.CategoryService;
-
 import java.util.List;
 
 
@@ -14,7 +13,6 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-
 
     @Override
     public Category addCategory(CategoryReqDTO categoryReqDTO) {
