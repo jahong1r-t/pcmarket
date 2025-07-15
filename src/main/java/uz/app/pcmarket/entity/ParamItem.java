@@ -17,4 +17,7 @@ public class ParamItem extends AuditEntity {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "filter_id")
+    private Parameters filter;
 }

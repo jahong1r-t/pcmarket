@@ -21,4 +21,8 @@ public class Parameters extends AuditEntity {
 
     @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL)
     private List<ParamItem> paramItems;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

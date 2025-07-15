@@ -16,6 +16,4 @@ public class CategoryReqDTO {
     public CategoryReqDTO(String name) {
         this.name = name;
     }
-
-
 }
