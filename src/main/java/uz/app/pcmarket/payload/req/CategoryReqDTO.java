@@ -7,4 +7,15 @@ import lombok.Data;
 @Builder
 public class CategoryReqDTO {
     private String name;
+
+
+    public CategoryReqDTO() {
+
+    }
+
+    public CategoryReqDTO(String name) {
+        this.name = name;
+    }
+
+
 }
