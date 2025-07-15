@@ -10,7 +10,6 @@ public class CategoryReqDTO {
 
 
     public CategoryReqDTO() {
-
     }
 
     public CategoryReqDTO(String name) {

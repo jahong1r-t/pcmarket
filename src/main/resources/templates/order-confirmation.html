@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="uz" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Buyurtma tasdiqlandi</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto p-4">
+  <nav class="text-gray-500 mb-4">
+    <a href="/">Главная</a> > <a href="/order">Оформление заказа</a> > Заказ принят
+  </nav>
+  <h1 class="text-2xl font-bold mb-4">Ваш заказ принят. Благодарим вас.</h1>
+  <p>Номер заказа: <span th:text="${order.id}">36951</span></p>
+  <p>Дата: <span th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy')}">15.07.2025</span></p>
+  <p>Итого: <span th:text="${totalPrice + ' so‘m'}">7 320 000,0 сум</span></p>
+  <p>Способ оплаты: Оплата при доставке</p>
+  <p>Оплата наличными при доставке заказа.</p>
+
+  <h2 class="text-xl font-semibold mt-4">Информация о заказе</h2>
+  <div th:each="item : ${cartItems}">
+    <p>Товар: <span th:text="${item.product.name}">Mahsulot nomi</span></p>
+  </div>
+  <p>Способ оплаты: Оплата при доставке</p>
+  <p>Итого: <span th:text="${totalPrice + ' so‘m'}">0 сум</span></p>
+
+  <h2 class="text-xl font-semibold mt-4">Платёжный адрес</h2>
+  <p th:text="${orderReqDTO.firstName}">alisher</p>
+  <p th:text="${orderReqDTO.lastName}">tasshkent</p>
+  <p th:text="${orderReqDTO.phoneNumber}">997777777</p>
+</div>
+</body>
+</html>

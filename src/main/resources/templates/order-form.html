@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uz" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Buyurtma berish</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4">Buyurtma berish</h1>
+  <form th:action="@{/order/create/{userId}(userId=${userId})}" method="post" class="space-y-4">
+    <div>
+      <label for="firstName" class="block">Ism</label>
+      <input type="text" id="firstName" name="firstName" class="w-full border p-2" required>
+    </div>
+    <div>
+      <label for="lastName" class="block">Familiya</label>
+      <input type="text" id="lastName" name="lastName" class="w-full border p-2" required>
+    </div>
+    <div>
+      <label for="phoneNumber" class="block">Telefon raqami</label>
+      <input type="text" id="phoneNumber" name="phoneNumber" class="w-full border p-2" required>
+    </div>
+    <div>
+      <h2 class="text-xl font-semibold">Savatdagi mahsulotlar</h2>
+      <ul>
+        <li th:each="item : ${cartItems}" class="border-b py-2">
+          <span th:text="${item.product.name}">Mahsulot nomi</span> -
+          <span th:text="${item.product.price + ' so‘m'}">Narxi</span>
+        </li>
+      </ul>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Tasdiqlash</button>
+  </form>
+</div>
+</body>
+</html>
