@@ -1,212 +1,269 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PC Market - Category</title>
-  <link href="/css/style.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Market - Category</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 </head>
 <body>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.html">
-      <i class="bi bi-laptop me-2"></i>PC Market
-    </a>
-    <div class="navbar-nav ms-auto">
-      <a class="nav-link position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-        <i class="bi bi-basket2 fs-5"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
-      </a>
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="bi bi-laptop me-2"></i>PC Market
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                <i class="bi bi-basket2 fs-5"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      id="cartCount">0</span>
+            </a>
+        </div>
     </div>
-  </div>
 </nav>
 
 <!-- Cart Offcanvas -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Shopping Cart</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body d-flex flex-column">
-    <div id="cartItems" class="flex-grow-1">
-      <div class="text-center text-muted" id="emptyCart">
-        <i class="bi bi-basket2 fs-1"></i>
-        <p>Your cart is empty</p>
-      </div>
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Shopping Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-    <div class="border-top pt-3">
-      <div class="d-flex justify-content-between mb-3">
-        <strong>Total: $<span id="cartTotal">0.00</span></strong>
-      </div>
-      <button class="btn btn-outline-primary w-100 mb-2" onclick="window.location.href='checkout.html'">
-        <i class="bi bi-basket2 me-2"></i>Cart
-      </button>
-      <button class="btn btn-primary w-100" onclick="window.location.href='checkout.html'">
-        <i class="bi bi-credit-card me-2"></i>Checkout
-      </button>
+    <div class="offcanvas-body d-flex flex-column">
+        <div id="cartItems" class="flex-grow-1">
+            <div class="text-center text-muted" id="emptyCart">
+                <i class="bi bi-basket2 fs-1"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="border-top pt-3">
+            <div class="d-flex justify-content-between mb-3">
+                <strong>Total: $<span id="cartTotal">0.00</span></strong>
+            </div>
+            <button class="btn btn-outline-primary w-100 mb-2" onclick="window.location.href='checkout.html'">
+                <i class="bi bi-basket2 me-2"></i>Cart
+            </button>
+            <button class="btn btn-primary w-100" onclick="window.location.href='checkout.html'">
+                <i class="bi bi-credit-card me-2"></i>Checkout
+            </button>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="container-fluid main-content">
-  <div class="row">
-    <!-- Filters Sidebar -->
-    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-      <div class="position-sticky pt-3">
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Filters</span>
-          <button class="btn btn-sm btn-outline-secondary" onclick="clearFilters()">Clear</button>
-        </h6>
+    <div class="row">
+        <!-- Filters Sidebar -->
 
-        <div class="accordion" id="filtersAccordion">
-          <!-- Brand Filter -->
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#brandFilter">
-                Brand
-              </button>
-            </h2>
-            <div id="brandFilter" class="accordion-collapse collapse" data-bs-parent="#filtersAccordion">
-              <div class="accordion-body">
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="Acer" id="brand-acer">
-                  <label class="form-check-label" for="brand-acer">Acer</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="HP" id="brand-hp">
-                  <label class="form-check-label" for="brand-hp">HP</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="Dell" id="brand-dell">
-                  <label class="form-check-label" for="brand-dell">Dell</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="ASUS" id="brand-asus">
-                  <label class="form-check-label" for="brand-asus">ASUS</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="MSI" id="brand-msi">
-                  <label class="form-check-label" for="brand-msi">MSI</label>
-                </div>
-              </div>
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <form th:action="@{/products/search}" method="post" id="searchForm">
+                    <input type="hidden" name="categoryId" th:value="${categoryId}">
+
+                    <!-- Price Range -->
+                    <div class="mb-4">
+                        <h6 class="sidebar-heading px-3 mt-4 mb-2">Price Range ($)</h6>
+                        <div class="px-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <input type="number" class="form-control form-control-sm w-45"
+                                       id="minPriceInput" placeholder="Min" min="0" onchange="updateSliderFromInputs()">
+                                <span class="mx-2">-</span>
+                                <input type="number" class="form-control form-control-sm w-45"
+                                       id="maxPriceInput" placeholder="Max" min="0" onchange="updateSliderFromInputs()">
+                            </div>
+                            <div class="price-slider-container mt-2">
+                                <input type="range" class="form-range" min="0" max="5000" step="50"
+                                       id="lowerPrice" oninput="updateInputsFromSlider()">
+                                <input type="range" class="form-range" min="0" max="5000" step="50"
+                                       id="upperPrice" oninput="updateInputsFromSlider()">
+                            </div>
+                            <input type="hidden" name="minPrice" id="finalMinPrice">
+                            <input type="hidden" name="maxPrice" id="finalMaxPrice">
+                        </div>
+                    </div>
+                    <!-- Parameters Accordion -->
+                    <div class="accordion" id="filtersAccordion">
+                        <div class="accordion-item" th:each="p, iter : ${params}">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse"
+                                        th:attr="data-bs-target='#collapse_' + ${iter.index}">
+                                    <span th:text="${p.name}"></span>
+                                </button>
+                            </h2>
+                            <div th:attr="id='collapse_' + ${iter.index}"
+                                 class="accordion-collapse collapse"
+                                 data-bs-parent="#filtersAccordion">
+                                <div class="accordion-body">
+                                    <div class="form-check" th:each="i, iStat : ${p.itemDTOs}">
+                                        <input class="form-check-input filter-checkbox"
+                                               type="checkbox"
+                                               th:value="${i.id}"
+                                               th:id="${'item_' + iter.index + '_' + iStat.index}"
+                                               name="itemIds">
+                                        <label class="form-check-label"
+                                               th:attr="for='item_' + ${iter.index} + '_' + ${iStat.index}"
+                                               th:text="${i.name}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-3 px-3">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
             </div>
-          </div>
+        </nav>
 
-          <!-- Price Filter -->
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#priceFilter">
-                Price Range
-              </button>
-            </h2>
-            <div id="priceFilter" class="accordion-collapse collapse" data-bs-parent="#filtersAccordion">
-              <div class="accordion-body">
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="0-100" id="price-0-100">
-                  <label class="form-check-label" for="price-0-100">$0 - $100</label>
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2" id="categoryTitle">Category Products</h1>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="sortProducts('name')">
+                        <i class="bi bi-sort-alpha-down"></i> Name
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="sortProducts('price')">
+                        <i class="bi bi-sort-numeric-down"></i> Price
+                    </button>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="100-500" id="price-100-500">
-                  <label class="form-check-label" for="price-100-500">$100 - $500</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="500-1000" id="price-500-1000">
-                  <label class="form-check-label" for="price-500-1000">$500 - $1000</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="1000+" id="price-1000-plus">
-                  <label class="form-check-label" for="price-1000-plus">$1000+</label>
-                </div>
-              </div>
             </div>
-          </div>
 
-          <!-- RAM Filter -->
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ramFilter">
-                RAM
-              </button>
-            </h2>
-            <div id="ramFilter" class="accordion-collapse collapse" data-bs-parent="#filtersAccordion">
-              <div class="accordion-body">
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="8GB" id="ram-8gb">
-                  <label class="form-check-label" for="ram-8gb">8GB</label>
+            <!-- Product Cards -->
+            <div class="row" id="productGrid">
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="pro : ${products}">
+                    <div class="card product-card h-100">
+                        <div class="product-image">
+                            <img th:src="@{/attachment/download/{id}(id=${pro.imageId})}" alt="404">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="product-title" th:text="${pro.name}">${product.name}</h5>
+                            <p class="product-description" th:text="${pro.description}">${product.description}</p>
+                            <div class="mt-auto">
+                                <div class="product-price" th:text="${pro.price}">$${product.price.toFixed(2)}</div>
+                                <button class="btn btn-primary btn-add-to-cart w-100"
+                                        onclick="addToCart('${product.id}')">
+                                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="16GB" id="ram-16gb">
-                  <label class="form-check-label" for="ram-16gb">16GB</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="32GB" id="ram-32gb">
-                  <label class="form-check-label" for="ram-32gb">32GB</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="64GB" id="ram-64gb">
-                  <label class="form-check-label" for="ram-64gb">64GB</label>
-                </div>
-              </div>
             </div>
-          </div>
-
-          <!-- Storage Filter -->
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#storageFilter">
-                Storage
-              </button>
-            </h2>
-            <div id="storageFilter" class="accordion-collapse collapse" data-bs-parent="#filtersAccordion">
-              <div class="accordion-body">
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="SSD" id="storage-ssd">
-                  <label class="form-check-label" for="storage-ssd">SSD</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="HDD" id="storage-hdd">
-                  <label class="form-check-label" for="storage-hdd">HDD</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input filter-checkbox" type="checkbox" value="NVMe" id="storage-nvme">
-                  <label class="form-check-label" for="storage-nvme">NVMe</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Main content -->
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2" id="categoryTitle">Category Products</h1>
-        <div class="btn-group" role="group">
-          <button type="button" class="btn btn-outline-secondary" onclick="sortProducts('name')">
-            <i class="bi bi-sort-alpha-down"></i> Name
-          </button>
-          <button type="button" class="btn btn-outline-secondary" onclick="sortProducts('price')">
-            <i class="bi bi-sort-numeric-down"></i> Price
-          </button>
-        </div>
-      </div>
-
-      <!-- Product Cards -->
-      <div class="row" id="productGrid">
-        <!-- Products will be loaded here -->
-      </div>
-    </main>
-  </div>
+        </main>
+    </div>
 </div>
 
 <script src="/js/cart.js"></script>
-<script src="/js/products.js"></script>
 <script src="/js/category.js"></script>
+
+<script>
+    const lowerSlider = document.getElementById('lowerPrice');
+    const upperSlider = document.getElementById('upperPrice');
+    const minInput = document.getElementById('minPriceInput');
+    const maxInput = document.getElementById('maxPriceInput');
+    const finalMinPrice = document.getElementById('finalMinPrice');
+    const finalMaxPrice = document.getElementById('finalMaxPrice');
+
+    // Sliderlarni boshlang'ich holatga o'rnatish
+    lowerSlider.value = 100;
+    upperSlider.value = 1000;
+    minInput.value = 100;
+    maxInput.value = 1000;
+    finalMinPrice.value = 100;
+    finalMaxPrice.value = 1000;
+
+    function updateInputsFromSlider() {
+        // Pastki slider yuqoridagidan oshib ketmasligini ta'minlash
+        if (parseInt(lowerSlider.value) > parseInt(upperSlider.value)) {
+            lowerSlider.value = upperSlider.value;
+        }
+
+        minInput.value = lowerSlider.value;
+        maxInput.value = upperSlider.value;
+
+        finalMinPrice.value = lowerSlider.value;
+        finalMaxPrice.value = upperSlider.value;
+    }
+
+    function updateSliderFromInputs() {
+        // Input qiymatlarini tekshirish
+        let minVal = parseInt(minInput.value) || 0;
+        let maxVal = parseInt(maxInput.value) || 5000;
+
+        if (minVal < 0) minVal = 0;
+        if (maxVal > 5000) maxVal = 5000;
+        if (minVal > maxVal) minVal = maxVal;
+
+        lowerSlider.value = minVal;
+        upperSlider.value = maxVal;
+
+        finalMinPrice.value = minVal;
+        finalMaxPrice.value = maxVal;
+    }
+
+    // Inputlarni tekshirish
+    minInput.addEventListener('blur', function () {
+        let value = parseInt(this.value) || 0;
+        if (value < 0) value = 0;
+        if (value > parseInt(maxInput.value)) value = parseInt(maxInput.value);
+        this.value = value;
+        updateSliderFromInputs();
+    });
+
+    maxInput.addEventListener('blur', function () {
+        let value = parseInt(this.value) || 5000;
+        if (value > 5000) value = 5000;
+        if (value < parseInt(minInput.value)) value = parseInt(minInput.value);
+        this.value = value;
+        updateSliderFromInputs();
+    });
+
+    // Form submit qilinganda qiymatlarni yuborish
+    document.getElementById('searchForm').addEventListener('submit', function () {
+        finalMinPrice.value = minInput.value;
+        finalMaxPrice.value = maxInput.value;
+    });
+</script>
+
+<style>
+    .price-slider-container {
+        position: relative;
+        height: 40px;
+    }
+    .price-slider-container input[type="range"] {
+        position: absolute;
+        width: 100%;
+        pointer-events: none;
+    }
+    .price-slider-container input[type="range"]::-webkit-slider-thumb {
+        pointer-events: auto;
+    }
+    .w-45 {
+        width: 45% !important;
+    }
+</style>
+
+
+<script>
+    function updateSliderStyle() {
+        const container = document.querySelector('.price-slider-container');
+        container.style.setProperty('--lower-value', lowerSlider.value);
+        container.style.setProperty('--upper-value', upperSlider.value);
+        container.style.setProperty('--max-value', upperSlider.max);
+    }
+
+    // Har bir slider uchun yangilash funksiyasini qo'shing
+    lowerSlider.addEventListener('input', updateSliderStyle);
+    upperSlider.addEventListener('input', updateSliderStyle);
+
+    // Dastlabki yangilash
+    updateSliderStyle();
+</script>
 </body>
 </html>

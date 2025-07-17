@@ -5,26 +5,40 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import uz.app.pcmarket.controller.CategoryController;
+import uz.app.pcmarket.entity.Category;
 import uz.app.pcmarket.payload.req.CategoryReqDTO;
+import uz.app.pcmarket.payload.resp.CategoryRespDTO;
 import uz.app.pcmarket.service.CategoryService;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/categories" )
+@RequestMapping("/categories")
 public class CategoryControllerImpl implements CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping("add")
+    @PostMapping("/add")
     public String addCategory(@ModelAttribute CategoryReqDTO categoryReqDTO) {
         categoryService.addCategory(categoryReqDTO);
         return "redirect:/categories";
     }
 
+    /// 100 done
     @GetMapping
     public String getAllCategories(Model model) {
-        model.addAttribute("categories", categoryService.getAllCategories());
-        return "list";
+        List<Category> allCategories = categoryService.getAllCategories();
+
+        List<CategoryRespDTO> list = allCategories.stream()
+                .map(c -> CategoryRespDTO.builder()
+                        .id(c.getId().toString())
+                        .name(c.getName())
+                        .createAt(c.getCreatedAt().toLocalDate().toString())
+                        .build()).toList();
+
+        model.addAttribute("categories", list);
+        return "admin/create-category";
     }
 
 

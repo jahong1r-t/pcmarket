@@ -21,6 +21,6 @@ public class Attachment extends AuditEntity {
     private UUID id;
     private String name;
     private String suffix;
-    private Integer fileSize;
+    private Long fileSize;
     private String path;
 }

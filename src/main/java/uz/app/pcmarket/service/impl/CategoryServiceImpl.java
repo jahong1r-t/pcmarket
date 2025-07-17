@@ -19,10 +19,12 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryReqDTO.getName() == null || categoryReqDTO.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Category name cannot be empty");
         }
+
         Category category = Category
                 .builder()
                 .name(categoryReqDTO.getName())
                 .build();
+
         return categoryRepository.save(category);
     }
 

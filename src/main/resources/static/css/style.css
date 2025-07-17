@@ -18,6 +18,88 @@ body {
     margin-top: 80px;
     padding: 20px;
 }
+.table img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+}
+
+.price-slider-container {
+    position: relative;
+    height: 40px;
+    margin: 15px 0;
+}
+
+.price-slider-container input[type="range"] {
+    position: absolute;
+    width: 100%;
+    pointer-events: none;
+    -webkit-appearance: none;
+    height: 4px;
+    background: transparent;
+}
+
+.price-slider-container input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #0d6efd;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -6px;
+}
+
+.price-slider-container input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    height: 4px;
+    background: #ddd;
+}
+
+/* Range slider orasidagi maydonni ranglash */
+.price-slider-container {
+    --track-height: 4px;
+    --thumb-width: 16px;
+    --thumb-height: 16px;
+}
+
+.price-slider-container::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--thumb-width) / 2);
+    right: calc(var(--thumb-width) / 2);
+    top: 50%;
+    transform: translateY(-50%);
+    height: var(--track-height);
+    background: #0d6efd;
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+/* Product card rasmlari uchun bir xil o'lcham */
+.product-image {
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa; /* Rasm yo'q bo'lsa fon rangi */
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* yoki cover - qanday ko'rsatishni tanlang */
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
 
 .navbar-brand {
     font-size: 1.5rem;

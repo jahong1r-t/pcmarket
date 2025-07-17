@@ -22,10 +22,13 @@ public class Product extends AuditEntity {
     private String description;
     private Double price;
     private String quantity;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Attachment image;
+
     @ManyToOne
     private Category category;
 
-
     @ManyToMany
-    private List<ParamItem> paramItems;
+    private List<ParamItem> items;
 }

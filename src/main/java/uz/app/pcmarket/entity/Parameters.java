@@ -19,7 +19,7 @@ public class Parameters extends AuditEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parameters", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ParamItem> paramItems;
 
     @ManyToOne
