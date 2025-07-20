@@ -46,4 +46,15 @@ public class OrderControllerImpl implements OrderController {
         mav.addObject("totalPrice", totalPrice);
         return mav;
     }
+
+    @GetMapping
+    public String orderPage(){
+        return "order-form";
+    }
+
+
+   /* @GetMapping("/create/{userId}")
+    public  String showCreateOrderPage(@PathVariable Long userId) {
+        return "order-form";
+    }*/
 }

@@ -139,25 +139,26 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="pro : ${products}">
                     <div class="card product-card h-100">
                         <div class="product-image">
-                            <img th:src="@{/attachment/download/{id}(id=${pro.imageId})}" alt="404">
+                            <img th:src="@{/attachment/download/{id}(id=${pro.imageId})}" alt="Product Image">
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <h5 class="product-title" th:text="${pro.name}">${product.name}</h5>
-                            <p class="product-description" th:text="${pro.description}">${product.description}</p>
+                            <h5 class="product-title" th:text="${pro.name}"></h5>
+                            <p class="product-description" th:text="${pro.description}"></p>
                             <div class="mt-auto">
-                                <div class="product-price" th:text="${pro.price}">$${product.price.toFixed(2)}</div>
-                                <button class="btn btn-primary btn-add-to-cart w-100"
-                                        onclick="addToCart('${product.id}')">
-                                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
-                                </button>
+                                <div class="product-price" th:text="'$' + ${pro.price}"></div>
+                                <form th:action="@{/cart/add}" method="post">
+                                    <input type="hidden" name="userId" th:value="${session.userId}" />
+                                    <input type="hidden" name="productId" th:value="${pro.id}" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-primary btn-add-to-cart w-100">
+                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-</div>
 
 <script src="/js/cart.js"></script>
 <script src="/js/category.js"></script>
