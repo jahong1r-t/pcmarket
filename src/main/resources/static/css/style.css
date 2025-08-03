@@ -156,7 +156,7 @@ body {
 .product-image {
     height: 200px;
     object-fit: cover;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -375,15 +375,15 @@ body {
         height: auto;
         padding: 1rem 0;
     }
-    
+
     .main-content {
         margin-top: 56px;
     }
-    
+
     .offcanvas {
         width: 100% !important;
     }
-    
+
     .product-card {
         margin-bottom: 1rem;
     }

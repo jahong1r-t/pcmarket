@@ -21,7 +21,7 @@ public class Product extends AuditEntity {
     private String name;
     private String description;
     private Double price;
-    private String quantity;
+    private Integer quantity;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Attachment image;

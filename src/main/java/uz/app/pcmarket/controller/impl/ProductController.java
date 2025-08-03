@@ -1,5 +1,7 @@
 package uz.app.pcmarket.controller.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,7 +19,7 @@ import uz.app.pcmarket.repository.ParameterRepository;
 import uz.app.pcmarket.repository.ProductRepository;
 import uz.app.pcmarket.service.AttachmentService;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,7 +33,7 @@ public class ProductController {
     private final AttachmentService attachmentService;
 
     @GetMapping
-    public String getProducts(Model model) {
+    public String getProducts(Model model, HttpServletRequest request) {
         List<Product> all = productRepository.findAll();
         List<ProductRespDTO> products = all.stream()
                 .map(product -> ProductRespDTO.builder()
@@ -76,12 +78,13 @@ public class ProductController {
         return "/admin/create-product";
     }
 
-
     @PostMapping("/add")
     public String addProduct(@Valid @ModelAttribute ProductReqDTO productReqDTO) {
         Attachment upload = attachmentService.upload(productReqDTO.getImage());
 
         List<ParamItem> allById = parameterItemRepository.findAllById(productReqDTO.getItemIds());
+
+        allById.forEach((i) -> System.out.println("Item: " + i.getName() + ", ID: " + i.getId()));
 
         Product build = Product.builder()
                 .name(productReqDTO.getName())
@@ -97,7 +100,7 @@ public class ProductController {
 
         return "redirect:/products";
     }
-
+    
     @GetMapping("/select-category")
     public String selectCategory(Model model) {
         model.addAttribute("categories", categoryRepository.findAll());
@@ -140,7 +143,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String getProductDetails(@PathVariable Long id, Model model) {
+    public String getProductDetails(@PathVariable Long id, Model model, HttpServletRequest request) {
         List<Parameters> parametersByCategoryId = parameterRepository.findParametersByCategory_Id(id);
 
         List<ParameterRespDTO> list = parametersByCategoryId.stream()
@@ -174,6 +177,23 @@ public class ProductController {
                         .build())
                 .toList();
 
+        HttpSession session = request.getSession();
+
+        Map<Long, ProductRespDTO> basket = (Map<Long, ProductRespDTO>) session.getAttribute("basket");
+
+        if (basket == null) {
+            basket = new HashMap<>();
+            session.setAttribute("basket", basket);
+        }
+
+        double totalPrice = basket.values().stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+
+        model.addAttribute("basket", basket.values());
+        model.addAttribute("size", basket.size());
+        model.addAttribute("total", totalPrice);
+
         model.addAttribute("params", list);
         model.addAttribute("products", products);
         model.addAttribute("categoryId", id);
@@ -181,7 +201,6 @@ public class ProductController {
 
         return "products";
     }
-
 
     @PostMapping("/search")
     public String searchProducts(@Valid @ModelAttribute() SearchReqDTO searchReqDTO, Model model) {
@@ -236,5 +255,94 @@ public class ProductController {
         model.addAttribute("categoryId", searchReqDTO.getCategoryId());
 
         return "products";
+    }
+
+    @PostMapping("/cart")
+    public String addToCart(@RequestParam(name = "productId") Long productId,
+                            Model model,
+                            HttpServletRequest request) {
+
+        Product product = productRepository
+                .findById(productId).orElseThrow(() -> new NoSuchElementException("Product Not Found"));
+
+        if (1 > product.getQuantity()) {
+            model.addAttribute("errorTitle", "Product Quantity Exceeded");
+            model.addAttribute("errorMessage", "Product Quantity Exceeded");
+
+            return "redirect:/error";
+        }
+
+        ProductRespDTO build = ProductRespDTO.builder()
+                .id(product.getId())
+                .imageId(product.getImage().getId().toString())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .quantity(1)
+                .build();
+
+
+        HttpSession session = request.getSession();
+        Map<Long, ProductRespDTO> basket = (Map<Long, ProductRespDTO>) session.getAttribute("basket");
+
+        basket.put(product.getId(), build);
+
+        basket.forEach((k, v) -> System.out.println("Key" + k + " Value: " + v.getName()));
+
+        return "redirect:/products/" + product.getCategory().getId();
+    }
+
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Map<Long, ProductRespDTO> basket = (Map<Long, ProductRespDTO>) session.getAttribute("basket");
+
+        if (basket == null) {
+            basket = new HashMap<>();
+            session.setAttribute("basket", basket);
+        }
+
+        basket.remove(id);
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/products");
+    }
+
+    @GetMapping("/increase/{id}")
+    public String increaseQuantity(@PathVariable Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Map<Long, ProductRespDTO> basket = (Map<Long, ProductRespDTO>) session.getAttribute("basket");
+
+        if (basket == null) {
+            basket = new HashMap<>();
+            session.setAttribute("basket", basket);
+        }
+
+        ProductRespDTO product = basket.get(id);
+        if (product != null) {
+            product.setQuantity(product.getQuantity() + 1);
+        }
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/products");
+    }
+
+    @GetMapping("/decrease/{id}")
+    public String decreaseQuantity(@PathVariable Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Map<Long, ProductRespDTO> basket = (Map<Long, ProductRespDTO>) session.getAttribute("basket");
+
+        if (basket == null) {
+            basket = new HashMap<>();
+            session.setAttribute("basket", basket);
+        }
+
+        ProductRespDTO product = basket.get(id);
+        if (product != null && product.getQuantity() > 1) {
+            product.setQuantity(product.getQuantity() - 1);
+        }
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/products");
     }
 }

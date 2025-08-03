@@ -10,7 +10,7 @@ public class ProductRespDTO {
     private String name;
     private String description;
     private Double price;
-    private String quantity;
+    private Integer quantity;
     private String imageId;
     private String createAt;
 }

@@ -21,7 +21,7 @@
             <a class="nav-link position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
                 <i class="bi bi-basket2 fs-5"></i>
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                      id="cartCount">0</span>
+                      th:text="${size}"></span>
             </a>
         </div>
     </div>
@@ -34,15 +34,45 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column">
-        <div id="cartItems" class="flex-grow-1">
-            <div class="text-center text-muted" id="emptyCart">
-                <i class="bi bi-basket2 fs-1"></i>
-                <p>Your cart is empty</p>
+
+        <div th:each="item : ${basket}" class="cart-item mb-3 p-3 border rounded">
+            <div class="d-flex align-items-center">
+                <div class="cart-item-image me-3">
+                    <img th:src="@{/attachment/download/{id}(id=${item.imageId})}" alt="image" width="60" height="60"/>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1" th:text="${item.name}">Product Name</h6>
+                    <small class="text-muted">$<span th:text="${item.price}">0.00</span></small>
+                </div>
             </div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                <div class="quantity-controls">
+
+                    <a th:href="@{/products/decrease/{id}(id=${item.id})}">
+                        <button class="quantity-btn btn btn-sm btn-outline-secondary">−</button>
+                    </a>
+
+                    <span class="quantity-display mx-2" th:text="${item.quantity}">1</span>
+
+                    <a th:href="@{/products/increase/{id}(id=${item.id})}">
+                        <button class="quantity-btn btn btn-sm btn-outline-secondary">+</button>
+                    </a>
+
+                </div>
+
+                <a th:href="@{/products/remove/{id}(id=${item.id})}">
+                    <button class="btn btn-sm btn-outline-danger" type="button">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </a>
+            </div>
+
         </div>
+
+
         <div class="border-top pt-3">
             <div class="d-flex justify-content-between mb-3">
-                <strong>Total: $<span id="cartTotal">0.00</span></strong>
+                <strong>Total: $<span th:text="${total}">0.00</span></strong>
             </div>
             <button class="btn btn-outline-primary w-100 mb-2" onclick="window.location.href='checkout.html'">
                 <i class="bi bi-basket2 me-2"></i>Cart
@@ -146,10 +176,15 @@
                             <p class="product-description" th:text="${pro.description}">${product.description}</p>
                             <div class="mt-auto">
                                 <div class="product-price" th:text="${pro.price}">$${product.price.toFixed(2)}</div>
-                                <button class="btn btn-primary btn-add-to-cart w-100"
-                                        onclick="addToCart('${product.id}')">
-                                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
-                                </button>
+                                <form id="basketForm" action="/products/cart" method="post">
+                                    <label>
+                                        <input hidden="hidden" th:value="${pro.id}" name="productId">
+                                    </label>
+
+                                    <button type="submit" class="btn btn-primary btn-add-to-cart w-100">
+                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -171,11 +206,11 @@
     const finalMaxPrice = document.getElementById('finalMaxPrice');
 
     // Sliderlarni boshlang'ich holatga o'rnatish
-    lowerSlider.value = 100;
+    lowerSlider.value = 0;
     upperSlider.value = 1000;
-    minInput.value = 100;
+    minInput.value = 0;
     maxInput.value = 1000;
-    finalMinPrice.value = 100;
+    finalMinPrice.value = 0;
     finalMaxPrice.value = 1000;
 
     function updateInputsFromSlider() {
@@ -236,14 +271,17 @@
         position: relative;
         height: 40px;
     }
+
     .price-slider-container input[type="range"] {
         position: absolute;
         width: 100%;
         pointer-events: none;
     }
+
     .price-slider-container input[type="range"]::-webkit-slider-thumb {
         pointer-events: auto;
     }
+
     .w-45 {
         width: 45% !important;
     }

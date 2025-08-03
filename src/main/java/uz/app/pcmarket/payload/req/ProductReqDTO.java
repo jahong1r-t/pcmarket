@@ -20,9 +20,8 @@ public class ProductReqDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private Double price;
 
-    @NotBlank(message = "Quantity must not be empty")
-    @Pattern(regexp = "\\d+", message = "Quantity must be a valid number")
-    private String quantity;
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private Integer quantity;
 
     @NotNull(message = "Image file is required")
     private MultipartFile image;
