@@ -20,6 +20,7 @@ public class User extends AuditEntity {
     private String fullName;
     private String email;
     private String password;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private Role role;

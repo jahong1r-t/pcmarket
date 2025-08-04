@@ -34,10 +34,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column">
-        <div id="cartItems" class="flex-grow-1">
-            <div class="text-center text-muted" id="emptyCart">
-                <i class="bi bi-basket2 fs-1"></i>
-                <p>Your cart is empty</p>
+
+        <div th:each="item : ${basket}" class="cart-item mb-3 p-3 border rounded">
+            <div class="d-flex align-items-center">
+                <div class="cart-item-image me-3">
+                    <img th:src="@{/attachment/download/{id}(id=${item.imageId})}" alt="image" width="60" height="60"/>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1" th:text="${item.name}">Product Name</h6>
+                    <small class="text-muted">$<span th:text="${item.price}">0.00</span></small>
+                </div>
             </div>
             <div class="d-flex align-items-center justify-content-between mt-2">
                 <div class="quantity-controls">
@@ -68,15 +74,49 @@
             <div class="d-flex justify-content-between mb-3">
                 <strong>Total: $<span th:text="${total}">0.00</span></strong>
             </div>
-            <button class="btn btn-outline-primary w-100 mb-2" onclick="window.location.href='checkout.html'">
-                <i class="bi bi-basket2 me-2"></i>Cart
-            </button>
-            <button class="btn btn-primary w-100" onclick="window.location.href='checkout.html'">
+
+            <button class="btn btn-primary w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#checkoutModal">
                 <i class="bi bi-credit-card me-2"></i>Checkout
             </button>
+
         </div>
     </div>
 </div>
+
+<!-- Checkout Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/products/checkout" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Checkout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="fullName" class="form-control" required>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" name="phoneNumber" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <div class="container-fluid main-content">
     <div class="row">
@@ -163,39 +203,107 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="pro : ${products}">
                     <div class="card product-card h-100">
                         <div class="product-image">
-                            <img th:src="@{/attachment/download/{id}(id=${pro.imageId})}" alt="Product Image">
+                            <img th:src="@{/attachment/download/{id}(id=${pro.imageId})}" alt="404">
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <h5 class="product-title" th:text="${pro.name}"></h5>
-                            <p class="product-description" th:text="${pro.description}"></p>
+                            <h5 class="product-title" th:text="${pro.name}">Product Name</h5>
+                            <p class="product-description" th:text="${pro.description}">Description</p>
                             <div class="mt-auto">
-                                <div class="product-price" th:text="${pro.price}">$${product.price.toFixed(2)}</div>
-                                <form id="basketForm" action="/products/cart" method="post">
-                                    <label>
-                                        <input hidden="hidden" th:value="${pro.id}" name="productId">
-                                    </label>
+                                <div class="product-price"
+                                     th:text="'$' + ${#numbers.formatDecimal(pro.price, 1, 'COMMA', 2, 'POINT')}">
+                                    $0.00
+                                </div>
 
-                                    <button type="submit" class="btn btn-primary btn-add-to-cart w-100">
-                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                <!-- If product is in stock -->
+                                <div th:if="${pro.quantity > 0}">
+                                    <form id="basketForm" action="/products/cart" method="post">
+                                        <input type="hidden" th:value="${pro.id}" name="productId"/>
+                                        <button type="submit" class="btn btn-primary btn-add-to-cart w-100 mb-2">
+                                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                                        </button>
+                                    </form>
+
+                                    <button type="button" class="btn btn-success w-100"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#buyNowModal"
+                                            th:attr="data-product-id=${pro.id},
+                                            data-product-name=${pro.name}">
+                                        <i class="bi bi-lightning-charge me-2"></i> Buy Now
                                     </button>
-                                </form>
-                                <div class="product-price" th:text="'$' + ${pro.price}"></div>
-                                <form th:action="@{/cart/add}" method="post">
-                                    <input type="hidden" name="userId" th:value="${session.userId}" />
-                                    <input type="hidden" name="productId" th:value="${pro.id}" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <button type="submit" class="btn btn-primary btn-add-to-cart w-100">
-                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+
+                                </div>
+
+                                <!-- If product is out of stock -->
+                                <div th:unless="${pro.quantity > 0}">
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        <i class="bi bi-x-circle me-2"></i> Out of Stock
                                     </button>
-                                </form>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+
+            <!-- Buy Now Modal (global, outside loop) -->
+            <div class="modal fade" id="buyNowModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="/products/buy-now" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Complete Your Purchase</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <!-- Product ID -->
+                                <input type="hidden" id="modalProductId" name="productId"/>
+
+                                <!-- Full Name -->
+                                <div class="mb-3">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="fullName" class="form-control" required/>
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" name="phoneNumber" class="form-control" required/>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Confirm Purchase</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+
 <script src="/js/cart.js"></script>
 <script src="/js/category.js"></script>
+
+<script>
+    const buyNowModal = document.getElementById('buyNowModal');
+
+    buyNowModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        const productId = button.getAttribute('data-product-id');
+        const productName = button.getAttribute('data-product-name');
+
+        document.getElementById('modalProductId').value = productId;
+        document.getElementById('modalProductName').value = productName;
+    });
+</script>
+
 
 <script>
     const lowerSlider = document.getElementById('lowerPrice');

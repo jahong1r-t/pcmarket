@@ -1,6 +1,7 @@
 package uz.app.pcmarket.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,6 +39,13 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorTitle", "Validation Error");
         model.addAttribute("errors", errors);
         model.addAttribute("status", 400);
+        return "error";
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public String handleIllegalArgumentException(IllegalStateException e, Model model) {
+        model.addAttribute("errorMessage", e.getMessage());
+        model.addAttribute("status", HttpStatus.CONFLICT);
         return "error";
     }
 }

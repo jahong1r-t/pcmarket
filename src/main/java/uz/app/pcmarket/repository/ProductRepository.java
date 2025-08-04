@@ -10,13 +10,17 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByCategory_Id(Long categoryId);
 
-    @Query("SELECT DISTINCT p FROM Product p " +
+    @Query("SELECT p FROM Product p " +
             "JOIN p.items i " +
             "WHERE i.id IN :itemIds " +
-            "AND p.price BETWEEN :minPrice AND :maxPrice")
-    List<Product> findByItemIdsAndPriceBetween(@Param("itemIds") List<Long> itemIds,
-                                               @Param("minPrice") Double minPrice,
-                                               @Param("maxPrice") Double maxPrice);
+            "AND p.price BETWEEN :minPrice AND :maxPrice " +
+            "GROUP BY p " +
+            "HAVING COUNT(DISTINCT i.id) = :itemCount")
+    List<Product> findByAllItemIdsAndPriceBetween(@Param("itemIds") List<Long> itemIds,
+                                                  @Param("minPrice") Double minPrice,
+                                                  @Param("maxPrice") Double maxPrice,
+                                                  @Param("itemCount") Long itemCount);
+
 
     @Query("SELECT p FROM Product p " +
             "WHERE p.category.id = :categoryId " +

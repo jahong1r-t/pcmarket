@@ -7,16 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.app.pcmarket.entity.*;
+import uz.app.pcmarket.entity.enums.OrderStatus;
+import uz.app.pcmarket.entity.enums.Role;
+import uz.app.pcmarket.payload.req.BuyReqDTO;
 import uz.app.pcmarket.payload.req.ProductReqDTO;
 import uz.app.pcmarket.payload.req.SearchReqDTO;
 import uz.app.pcmarket.payload.resp.ItemRespDTO;
 import uz.app.pcmarket.payload.resp.ParameterRespDTO;
 import uz.app.pcmarket.payload.resp.ProductRespDTO;
-import uz.app.pcmarket.repository.CategoryRepository;
-import uz.app.pcmarket.repository.ParameterItemRepository;
-import uz.app.pcmarket.repository.ParameterRepository;
-import uz.app.pcmarket.repository.ProductRepository;
+import uz.app.pcmarket.repository.*;
 import uz.app.pcmarket.service.AttachmentService;
 
 import java.util.*;
@@ -31,6 +32,8 @@ public class ProductController {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final AttachmentService attachmentService;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     @GetMapping
     public String getProducts(Model model, HttpServletRequest request) {
@@ -100,7 +103,7 @@ public class ProductController {
 
         return "redirect:/products";
     }
-    
+
     @GetMapping("/select-category")
     public String selectCategory(Model model) {
         model.addAttribute("categories", categoryRepository.findAll());
@@ -208,15 +211,18 @@ public class ProductController {
         List<Product> products;
 
         if (searchReqDTO.getItemIds() != null && !searchReqDTO.getItemIds().isEmpty()) {
-            products = productRepository.findByItemIdsAndPriceBetween(
+            products = productRepository.findByAllItemIdsAndPriceBetween(
                     searchReqDTO.getItemIds(),
+                    searchReqDTO.getMinPrice(),
+                    searchReqDTO.getMaxPrice(),
+                    (long) searchReqDTO.getItemIds().size()
+            );
+        } else {
+            products = productRepository.findByCategoryAndPriceBetween(
+                    searchReqDTO.getCategoryId(),
                     searchReqDTO.getMinPrice(),
                     searchReqDTO.getMaxPrice()
             );
-        } else {
-            products = productRepository.findByCategoryAndPriceBetween(searchReqDTO.getCategoryId(),
-                    searchReqDTO.getMinPrice(),
-                    searchReqDTO.getMaxPrice());
         }
 
         List<Parameters> parametersByCategoryId = parameterRepository.findParametersByCategory_Id(searchReqDTO.getCategoryId());
@@ -343,6 +349,74 @@ public class ProductController {
         }
 
         String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/products");
+    }
+
+    @PostMapping("/buy-now")
+    public String buyNow(@Valid BuyReqDTO buyReqDTO, Model model, HttpServletRequest request) {
+        Product product = productRepository
+                .findById(buyReqDTO.getProductId()).orElseThrow(() -> new NoSuchElementException("Product Not Found"));
+
+        if (1 > product.getQuantity()) {
+            model.addAttribute("errorTitle", "Product Quantity Exceeded");
+            model.addAttribute("errorMessage", "Product Quantity Exceeded");
+
+            return "redirect:/error";
+        }
+
+        User build = User.builder()
+                .fullName(buyReqDTO.getFullName())
+                .phoneNumber(buyReqDTO.getPhoneNumber())
+                .role(Role.USER)
+                .build();
+
+        userRepository.save(build);
+
+        Order order = Order.builder()
+                .user(build)
+                .product(product)
+                .status(OrderStatus.ACTIVE)
+                .quantity(1)
+                .build();
+
+        orderRepository.save(order);
+
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/products");
+    }
+
+    @PostMapping("/checkout")
+    public String checkout(HttpServletRequest request, @Valid BuyReqDTO buyReqDTO) {
+        HttpSession session = request.getSession();
+        Map<Long, ProductRespDTO> basket = (Map<Long, ProductRespDTO>) session.getAttribute("basket");
+
+        String referer = request.getHeader("Referer");
+
+        if (basket == null || basket.isEmpty()) {
+            return "redirect:" + (referer != null ? referer : "/products");
+        }
+
+        User build = User.builder()
+                .fullName(buyReqDTO.getFullName())
+                .phoneNumber(buyReqDTO.getPhoneNumber())
+                .build();
+
+        userRepository.save(build);
+
+        List<Order> orders = basket.values().stream()
+                .map(item -> Order.builder()
+                        .product(productRepository.findById(item.getId()).orElseThrow())
+                        .quantity(item.getQuantity())
+                        .user(build)
+                        .status(OrderStatus.ACTIVE)
+                        .build())
+                .collect(Collectors.toList());
+
+        orderRepository.saveAll(orders);
+        basket.clear();
+        session.setAttribute("basket", basket);
+
         return "redirect:" + (referer != null ? referer : "/products");
     }
 }

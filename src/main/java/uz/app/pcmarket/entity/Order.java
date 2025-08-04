@@ -15,7 +15,14 @@ public class Order extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private OrderStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
+
+    @Column(nullable = false)
+    private Integer quantity;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
