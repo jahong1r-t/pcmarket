@@ -1,17 +1,36 @@
-version: '3.8'
 services:
   postgres:
-    image: postgres:16
+    image: postgres:15
     container_name: postgres_market
-    restart: always
     environment:
+      POSTGRES_DB: market
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root123
-      POSTGRES_DB: market
+      PGDATA: /var/lib/postgresql/data/pgdata
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pcmarket-net
+
+  app:
+    build: .
+    container_name: pcmarket_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - ./photos:/photos
+    networks:
+      - pcmarket-net
 
 volumes:
   postgres_data:
+
+networks:
+  pcmarket-net:
+    driver: bridge
